@@ -3,9 +3,14 @@
 
 import logging
 from datetime import datetime
+import os
 
 log_day = datetime.strftime(datetime.now(), "%Y%m%d")
-log_file = "/var/log/python-%s/week01.log" % log_day
+log_dir = "/var/log/python-%s" % log_day
+log_file = log_dir + "/week01.log"
+
+if not os.path.exists(log_dir):
+    os.makedirs(log_dir)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -16,7 +21,7 @@ logging.basicConfig(
 
 def main():
     logging.info("execute main.")
-    print("hello, %s", __name__)
+    print("hello, %s" % __name__)
 
 
 if __name__ == "__main__":
