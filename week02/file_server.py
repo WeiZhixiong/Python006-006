@@ -33,12 +33,13 @@ class Writer:
             else:
                 first_part = first_part.split(b"\r\n\r\n", 1)
                 if len(first_part[0]) > 0:
-                    self.filename = Path(Path(first_part[0].decode()).name)
+                    self.filename = Path("received_" + Path(first_part[0].decode()).name)
                     if self.filename.exists():
                         raise Exception("already has file %s, exit" % self.filename)
                     self.has_filename = True
                 else:
                     raise Exception("filename length must greater than 0")
+                logging.info(f"start receive file {self.filename}")
                 with open(self.filename, 'wb') as f:
                     f.write(first_part[1])
                     f.write(write_data[1028:])
@@ -50,7 +51,7 @@ def worker(conn, client_addr):
     """
     logging.info("create connection; "
                  "client ip: %s, port: %d" % client_addr)
-    conn_explaintion = r"""欢迎使用文件上传服务器, 请使用 utf-8 编码, 文件名不能超过 1024 字节. 
+    conn_explaintion = r"""欢迎使用文件上传服务, 请使用 utf-8 编码, 文件名不能超过 1024 字节. 
     上传数据格式要求: {{ filename }}\r\n\r\n{{ file_content }}""" + "\r\n"
     conn.send(conn_explaintion.encode())
     write_buffer = []
