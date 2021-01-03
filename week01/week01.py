@@ -3,14 +3,14 @@
 
 import logging
 from datetime import datetime
-import os
+from pathlib import PurePath, Path
 
 log_day = datetime.strftime(datetime.now(), "%Y%m%d")
-log_dir = "/var/log/python-%s" % log_day
-log_file = log_dir + "/week01.log"
+log_dir = Path("/var/log/python-%s" % log_day)
+log_file = PurePath(log_dir, "week01.log")
 
-if not os.path.exists(log_dir):
-    os.makedirs(log_dir)
+if not log_dir.exists():
+    log_dir.mkdir(parents=True)
 
 logging.basicConfig(
     level=logging.INFO,
