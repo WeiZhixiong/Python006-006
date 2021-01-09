@@ -74,35 +74,41 @@ def sqlalchemy_test():
         sex="女",
         education="本科"
     )
-    sqlalchemy_session.add(user_1)
-    sqlalchemy_session.add(user_2)
-    sqlalchemy_session.add(user_3)
-    sqlalchemy_session.flush()
-    sqlalchemy_session.commit()
 
-    # query all
-    all_user = sqlalchemy_session.query(UserTable).all()
-    for user in all_user:
-        print(user)
+    try:
+        sqlalchemy_session.add(user_1)
+        sqlalchemy_session.add(user_2)
+        sqlalchemy_session.add(user_3)
+        sqlalchemy_session.flush()
+        sqlalchemy_session.commit()
 
-    # 指定条件查询
-    result = sqlalchemy_session.query(UserTable.name).filter(UserTable.user_id == 1).first()
-    print(result)
+        # query all
+        all_user = sqlalchemy_session.query(UserTable).all()
+        for user in all_user:
+            print(user)
 
-    # 排序
-    result = sqlalchemy_session.query(UserTable).order_by(desc(UserTable.age))
-    for user in result:
-        print(user.name)
+        # 指定条件查询
+        result = sqlalchemy_session.query(UserTable.name).filter(UserTable.user_id == 1).first()
+        print(result)
 
-    # 连接词
-    result = sqlalchemy_session.query(UserTable).filter(
-       or_(
-           UserTable.age == 20,
-           UserTable.age.between(17, 18)
-       )
-    )
-    for user in result:
-        print(user)
+        # 排序
+        result = sqlalchemy_session.query(UserTable).order_by(desc(UserTable.age))
+        for user in result:
+            print(user.name)
+
+        # 连接词
+        result = sqlalchemy_session.query(UserTable).filter(
+           or_(
+               UserTable.age == 20,
+               UserTable.age.between(17, 18)
+           )
+        )
+        for user in result:
+            print(user)
+    except Exception as e:
+        logger.error(e)
+    finally:
+        sqlalchemy_session.close()
 
 
 def pymysql_test():
@@ -114,8 +120,8 @@ def pymysql_test():
         port=mysql_port
     )
 
-    insert_user_sql = "insert into user (user_id, name, age, birthday, sex, " \
-                      "education, create_time, update_time) values (%s, %s, %s, %s, %s, %s, %s, %s)"
+    insert_user_sql = f"insert into {user_table} (user_id, name, age, birthday, sex, " \
+                      f"education, create_time, update_time) values (%s, %s, %s, %s, %s, %s, %s, %s)"
 
     try:
 
@@ -132,7 +138,7 @@ def pymysql_test():
 
         # 查询
         with pymysql_conn.cursor() as cursor:
-            query_sql = "select * from user"
+            query_sql = f"select * from {user_table}"
             cursor.execute(query_sql)
             query_result = cursor.fetchall()
             for user in query_result:
