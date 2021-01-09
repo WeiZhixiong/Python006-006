@@ -46,7 +46,8 @@ def sqlalchemy_test():
     # create table
     Base.metadata.create_all(sqlalchemy_engine)
 
-    sqlalchemy_session = sessionmaker(bind=sqlalchemy_engine)()
+    orm_session_maker = sessionmaker(bind=sqlalchemy_engine)
+    sqlalchemy_session = orm_session_maker()
 
     # insert user
     user_1 = UserTable(
