@@ -6,7 +6,7 @@ import logging
 import pymysql
 from sqlalchemy import create_engine
 from sqlalchemy import Column, Integer, String, Date, DateTime
-from sqlalchemy import desc, and_, or_, not_
+from sqlalchemy import desc, or_
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -79,7 +79,7 @@ def sqlalchemy_test():
     sqlalchemy_session.flush()
     sqlalchemy_session.commit()
 
-    #query all
+    # query all
     all_user = sqlalchemy_session.query(UserTable).all()
     for user in all_user:
         print(user)
