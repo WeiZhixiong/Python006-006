@@ -1,17 +1,17 @@
-###1. INNER JOIN 结果
+### 1. INNER JOIN
 ```
 | id   | name          | id   | name          |
 +------+---------------+------+---------------+
 |    1 | table1_table2 |    1 | table1_table2 |
 ```
-###2. LEFT JOIN 结果
+### 2. LEFT JOIN
 ```
 | id   | name          | id   | name          |
 +------+---------------+------+---------------+
 |    1 | table1_table2 |    1 | table1_table2 |
 |    2 | table1        | NULL | NULL          |
 ```
-###3. RIGHT JOIN 结果
+### 3. RIGHT JOIN
 ```
 | id   | name          | id   | name          |
 +------+---------------+------+---------------+
