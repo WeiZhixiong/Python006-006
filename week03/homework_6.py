@@ -75,7 +75,6 @@ def init_trade_info(orm_session_maker):
         sqlalchemy_session.add(user_2)
         sqlalchemy_session.add(user_1_asset)
         sqlalchemy_session.add(user_2_asset)
-        sqlalchemy_session.flush()
         sqlalchemy_session.commit()
     except Exception as e:
         logger.error(e)
@@ -117,9 +116,10 @@ def transfer_account(orm_session_maker):
             )
             sqlalchemy_session.add(audit_record)
         else:
-            logger.error(f"{from_user_name} 账户余额不足, 转账失败")
+            err_msg = f"{from_user_name} 账户余额不足, 转账失败"
+            logger.error(err_msg)
+            raise Exception(err_msg)
 
-        sqlalchemy_session.flush()
         sqlalchemy_session.commit()
 
     except Exception as e:
