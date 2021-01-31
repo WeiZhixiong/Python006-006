@@ -8,10 +8,10 @@ import redis
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-redis_host = "192.168.136.128"
+redis_host = "redis-host"
 redis_port = 6379
 redis_db = 0
-redis_password = "Abc123456."
+redis_password = "*************"
 
 redis_pool = redis.ConnectionPool(
     host=redis_host,
