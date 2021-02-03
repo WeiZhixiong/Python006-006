@@ -30,8 +30,7 @@ def get_redis_conn():
 def send_times(times):
 
     def decorate(func):
-        wraps(func)
-
+        @wraps(func)
         def wrapper(telephone_number, content):
             redis_conn = get_redis_conn()
             with redis_conn:
@@ -50,7 +49,6 @@ def send_times(times):
                     logger.info(f"1 分钟内发送次数超过 {times} 次, 请等待 1 分钟, "
                                 f"telephone: {telephone_number}, "
                                 f"发送次数: {send_count}")
-
         return wrapper
 
     return decorate
