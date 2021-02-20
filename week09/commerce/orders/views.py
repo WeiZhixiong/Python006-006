@@ -1,10 +1,17 @@
 # coding: utf-8
 
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, generics
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from .models import Orders
 from .serializers import OrdersSerializer
+
+
+class CreateOrdersView(generics.CreateAPIView):
+    queryset = Orders.objects.all()
+    serializer_class = OrdersSerializer
+    permission_classes = (IsAuthenticated,)
 
 
 class OrdersViewSet(viewsets.ModelViewSet):
