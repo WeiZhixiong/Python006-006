@@ -4,24 +4,8 @@
 
 def mapper(func, *args):
 
-    # 传入参数的可迭代对象列表
-    arg_iter_obj_list = []
-
-    # 将要传给 func 的参数列表
-    send_func_arg_list = []
-
-    # 获取可迭代对象并加入可迭代对象列表
-    for arg in args:
-        arg_iter_obj_list.append(iter(arg))
-
-    while True:
-        for arg_iter_obj in arg_iter_obj_list:
-            try:
-                send_func_arg_list.append(next(arg_iter_obj))
-            except StopIteration:
-                return None
-        yield func(*send_func_arg_list)
-        send_func_arg_list = []
+    for args in zip(*args):
+        yield func(*args)
 
 
 def awesome_add(x, y, z):
