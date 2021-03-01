@@ -95,7 +95,8 @@ def test():
             philosopher = DiningPhilosopher(uid, need_eat_count=n)
             thread_executor.submit(philosopher.run, locker)
 
-    print(behavior_list)
+    logger.info(f"behavior list: {behavior_list}")
+    return behavior_list
 
 
 if __name__ == '__main__':
