@@ -17,6 +17,7 @@ def main(request_url):
         "Connection": "keep-alive",
         "Upgrade-Insecure-Requests": "1",
         "Cache-Control": "no-cache",
+        "Cookie": "your cookie"
     }
 
     req = requests.get(request_url, headers=headers)
@@ -41,7 +42,7 @@ def main(request_url):
         write_lines.append(f"{movie_name},{movie_type},{show_time}\n")
 
     with open(movie_list_file, 'w') as f:
-        f.writelines(write_lines)
+        f.writelines(write_lines[:10])
 
 
 if __name__ == '__main__':
