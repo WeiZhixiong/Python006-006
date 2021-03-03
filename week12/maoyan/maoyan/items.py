@@ -6,7 +6,7 @@
 import scrapy
 
 
-class MaoyanItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+class MaoYanItem(scrapy.Item):
+    movie_name = scrapy.Field()
+    movie_type = scrapy.Field()
+    show_time = scrapy.Field()

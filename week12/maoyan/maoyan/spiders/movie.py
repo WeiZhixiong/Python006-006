@@ -1,5 +1,6 @@
 import scrapy
 from scrapy.selector import Selector
+from ..items import MaoYanItem
 
 
 class MovieSpider(scrapy.Spider):
@@ -27,13 +28,10 @@ class MovieSpider(scrapy.Spider):
             yield scrapy.Request(url=url, headers=headers, cookies=cookies)
 
     def parse(self, response):
-        # html_file = 'maoyan_movie.html'
-        # with open(html_file, 'wb') as f:
-        #     f.write(response.body)
-
         html_etree = Selector(response=response)
         movie_name_list = html_etree.xpath(
             '//div[@class="movie-hover-info"]/div[@class="movie-hover-title"]/span[@class="name "]/text()').getall()
+        movie_name_list = movie_name_list[:10]
         movie_type_list = html_etree.xpath(
             '//a/div[@class="movie-hover-info"]/div[@class="movie-hover-title"][2]/text()').getall()
         movie_type_list = movie_type_list[::-2]
@@ -42,7 +40,10 @@ class MovieSpider(scrapy.Spider):
             '//a/div[@class="movie-hover-info"]/div[@class="movie-hover-title movie-hover-brief"]/text()').getall()
         movie_show_time = movie_show_time[::-2]
         movie_show_time.reverse()
-        for movie_info in zip(movie_name_list, movie_type_list, movie_show_time):
-            movie_name = movie_info[0]
-            movie_type = movie_info[1].lstrip().strip()
-            show_time = movie_info[2].lstrip().strip()
+        movie_info_list = zip(movie_name_list, movie_type_list, movie_show_time)
+        for movie_info in movie_info_list:
+            item = MaoYanItem()
+            item["movie_name"] = movie_info[0]
+            item["movie_type"] = movie_info[1].lstrip().strip()
+            item["show_time"] = movie_info[2].lstrip().strip()
+            yield item
