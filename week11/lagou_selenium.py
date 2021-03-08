@@ -5,6 +5,7 @@ import time
 from selenium import webdriver
 from selenium.webdriver import Chrome
 from lxml import etree
+import pymysql
 from concurrent.futures import ThreadPoolExecutor, wait
 import logging
 
@@ -12,9 +13,20 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 laogou_url = "https://lagou.com"
+mysql_host = "my-host"
+mysql_port = 3306
+mysql_user = "test_user"
+mysql_password = "********"
+mysql_db = "lagou"
+job_table = "job"
 
 
 def parse_lagou_html(html_text) -> zip:
+    """
+    分析拉勾职位列表页面, 返回 (position_name_list, position_salary_list) 组成的可迭代对象
+    :param html_text:
+    :return:
+    """
     etree_html = etree.HTML(html_text)
     # position_id = etree_html.xpath(
     #     '//*[@id="s_position_list"]/ul/li[@class="con_list_item default_list"]/@data-positionid'
@@ -83,6 +95,33 @@ def lagou_spider(city, job_dict):
     job_dict[city] = job_list
 
 
+def write_job_to_mysql(job_info_list):
+
+    pymysql_conn = pymysql.connect(
+        user=mysql_user,
+        password=mysql_password,
+        host=mysql_host,
+        database=mysql_db,
+        port=mysql_port
+    )
+
+    create_table_sql = f"""
+        CREATE TABLE IF NOT EXISTS `{job_table}` (
+           `city` VARCHAR(100) NOT NULL,
+           `job_name` VARCHAR(100) NOT NULL,
+           `salary` VARCHAR(100) NOT NULL
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;    
+    """
+
+    insert_job_sql = f"insert into {job_table} (city, job_name, salary) values (%s, %s, %s)"
+
+    with pymysql_conn.cursor() as cursor:
+        cursor.execute(create_table_sql)
+        result = cursor.executemany(insert_job_sql, job_info_list)
+        logger.info(f"insert job count {result}")
+    pymysql_conn.commit()
+
+
 def main():
     job_dict = {}
     city_list = ["北京", "上海", "广州", "深圳"]
@@ -91,6 +130,15 @@ def main():
         wait(all_task, timeout=3600, return_when="ALL_COMPLETED")
 
     logger.info(f"job_dict: {job_dict}")
+
+    job_info_list = []
+    for city, job_list in job_dict.items():
+        for job_info in job_list:
+            if job_info:
+                job_info_list.append((city, job_info[0], job_info[1]))
+
+    if job_info_list:
+        write_job_to_mysql(job_info_list)
 
 
 if __name__ == '__main__':
