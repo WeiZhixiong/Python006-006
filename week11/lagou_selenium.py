@@ -115,11 +115,12 @@ def write_job_to_mysql(job_info_list):
 
     insert_job_sql = f"insert into {job_table} (city, job_name, salary) values (%s, %s, %s)"
 
-    with pymysql_conn.cursor() as cursor:
-        cursor.execute(create_table_sql)
-        result = cursor.executemany(insert_job_sql, job_info_list)
-        logger.info(f"insert job count {result}")
-    pymysql_conn.commit()
+    with pymysql_conn:
+        with pymysql_conn.cursor() as cursor:
+            cursor.execute(create_table_sql)
+            result = cursor.executemany(insert_job_sql, job_info_list)
+            logger.info(f"insert job count {result}")
+        pymysql_conn.commit()
 
 
 def main():
