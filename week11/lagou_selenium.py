@@ -3,6 +3,8 @@
 
 import time
 from selenium import webdriver
+import json
+from random import random
 from selenium.webdriver import Chrome
 from lxml import etree
 import pymysql
@@ -13,12 +15,16 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 lagou_url = "https://lagou.com"
+lagou_cookies_file = 'lagou_cookies.json'
 mysql_host = "my-host"
 mysql_port = 3306
 mysql_user = "test_user"
 mysql_password = "********"
 mysql_db = "lagou"
 job_table = "job"
+
+with open(lagou_cookies_file, 'r') as f:
+    lagou_cookies = json.load(f)
 
 
 def parse_lagou_html(html_text) -> zip:
@@ -41,55 +47,92 @@ def parse_lagou_html(html_text) -> zip:
     return zip(position_name_list, position_salary_list)
 
 
+def add_lagou_cookie(web_browser):
+    """
+    向浏览器添加已经认证过的 cookie
+    """
+    cookie_list = []
+
+    for lagou_cookie in lagou_cookies:
+        cookie = {
+            "name": lagou_cookie["name"],
+            "value": lagou_cookie["value"],
+            "path": lagou_cookie["path"],
+            "secure": lagou_cookie["secure"],
+        }
+        cookie_list.append(cookie)
+
+    for cookie in cookie_list:
+        try:
+            web_browser.add_cookie(cookie)
+        except Exception as e:
+            logger.error(e)
+
+
 def lagou_spider(city, job_dict):
 
     # chrome_options = webdriver.ChromeOptions()
     # chrome_options.add_argument("headless")
-    web_browser = Chrome()
-
     job_set = set()
-    web_browser.get(lagou_url)
 
-    # 进入拉钩城市站
-    time.sleep(2)
-    web_browser.find_element_by_xpath(f'//a[@data-city="{city}"]').click()
+    try:
+        web_browser = Chrome()
 
-    # 展开技术类职业选项
-    time.sleep(1)
-    web_browser.find_element_by_xpath('//*[@id="sidebar"]/div/div[1]/div[1]/div/i').click()
+        time.sleep(random() * 2)
+        web_browser.get(lagou_url)
 
-    # 进入 Python 相关职位页面
-    time.sleep(1)
-    web_browser.find_element_by_xpath(
-        '//*[@id="sidebar"]/div/div[1]/div[2]/dl[1]/dd/a[12]/h3'
-    ).click()
+        # 添加 cookie
+        time.sleep(random() * 2)
+        add_lagou_cookie(web_browser)
 
-    page_num = 1
-    job_num = 0
-    while job_num < 100 or page_num > 10:
-        page_num += 1
-        time.sleep(2)
-        scroll_js = '''window.scrollBy({
-                  top: 5000,
-                  behavior: 'smooth'
-                })'''
-        web_browser.execute_script(scroll_js)
-        time.sleep(2)
-        parse_result = parse_lagou_html(web_browser.page_source)
-        job_set = job_set | set(parse_result)
-        job_num = len(job_set)
-        logger.debug(job_set)
-        logger.info(f"already get job amount {job_num}")
-        # 进入下一页
-        try:
-            web_browser.find_element_by_xpath(
-                '//*[@id="order"]/li/div[4]/a[@class="next "]'
-            ).click()
-        except Exception as e:
-            logger.error(e)
-            break
+        time.sleep(random() * 2)
+        web_browser.refresh()
 
-    web_browser.close()
+        # 进入拉钩城市站
+        time.sleep(random() * 2)
+        web_browser.find_element_by_xpath('//*[@id="changeCity_btn"]/span').click()
+
+        time.sleep(random() * 2)
+        web_browser.find_element_by_xpath(f'//a[@data-city="{city}"]').click()
+
+        # 展开技术类职业选项
+        time.sleep(random() * 2)
+        web_browser.find_element_by_xpath('//*[@id="sidebar"]/div/div[1]/div[1]/div/i').click()
+
+        # 进入 Python 相关职位页面
+        time.sleep(random())
+        web_browser.find_element_by_xpath(
+            '//*[@id="sidebar"]/div/div[1]/div[2]/dl[1]/dd/a[12]/h3'
+        ).click()
+
+        page_num = 1
+        job_num = 0
+        while job_num < 100 or page_num > 10:
+            page_num += 1
+            time.sleep(random() * 2)
+            scroll_js = '''window.scrollBy({
+                      top: 5000,
+                      behavior: 'smooth'
+                    })'''
+            web_browser.execute_script(scroll_js)
+            time.sleep(random() * 2)
+            parse_result = parse_lagou_html(web_browser.page_source)
+            job_set = job_set | set(parse_result)
+            job_num = len(job_set)
+            logger.debug(job_set)
+            logger.info(f"already get job amount {job_num}")
+            # 进入下一页
+            try:
+                web_browser.find_element_by_xpath(
+                    '//*[@id="order"]/li/div[4]/a[@class="next "]'
+                ).click()
+            except Exception as e:
+                logger.error(e)
+                break
+    except Exception as e:
+        logger.error(e)
+    finally:
+        web_browser.close()
 
     job_list = list(job_set)[0:100]
     job_dict[city] = job_list
