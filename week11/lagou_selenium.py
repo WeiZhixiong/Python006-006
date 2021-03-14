@@ -115,7 +115,7 @@ def lagou_spider(city, job_dict):
                       behavior: 'smooth'
                     })'''
             web_browser.execute_script(scroll_js)
-            time.sleep(random() * 2)
+            time.sleep(random() * 10)
             parse_result = parse_lagou_html(web_browser.page_source)
             job_set = job_set | set(parse_result)
             job_num = len(job_set)
