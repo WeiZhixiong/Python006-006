@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+    <!-- 引入 echarts.js -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.0.2/dist/echarts.min.js"></script>
+</head>
+<body>
+
+    <div id="北京" style="width: 600px;height:400px;"></div>
+    <div id="上海" style="width: 600px;height:400px;"></div>
+    <div id="广州" style="width: 600px;height:400px;"></div>
+    <div id="深圳" style="width: 600px;height:400px;"></div>
+
+    <script type="text/javascript">
+        let option;
+        option = {
+            title: {
+                text: '各城市薪资分布',
+                subtext: '纯属虚构',
+                left: 'center'
+            },
+            tooltip: {
+                trigger: 'item'
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left',
+            },
+            series: [
+                {
+                    name: '薪资水平',
+                    type: 'pie',
+                    radius: '50%',
+                    data: [],
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ],
+        };
+
+        let salary_dict = {
+            "北京": [
+                {value: 20, name: '8k-12k'},
+                {value: 45, name: '12k-15k'},
+                {value: 15, name: '15k-20k'},
+                {value: 15, name: '20k-30k'},
+                {value: 5, name: '30k-50k'},
+            ],
+            "上海": [
+                {value: 15, name: '8k-12k'},
+                {value: 40, name: '12k-15k'},
+                {value: 25, name: '15k-20k'},
+                {value: 15, name: '20k-30k'},
+                {value: 5, name: '30k-50k'},
+            ],
+            "广州": [
+                {value: 20, name: '8k-12k'},
+                {value: 45, name: '12k-15k'},
+                {value: 15, name: '15k-20k'},
+                {value: 15, name: '20k-30k'},
+                {value: 5, name: '30k-50k'},
+            ],
+            "深圳": [
+                {value: 20, name: '8k-12k'},
+                {value: 45, name: '12k-15k'},
+                {value: 15, name: '15k-20k'},
+                {value: 15, name: '20k-30k'},
+                {value: 5, name: '30k-50k'},
+            ],
+        }
+
+        let city_list = Array("北京", "上海", "广州", "深圳")
+
+        for (let city_index in city_list) {
+            let city = city_list[city_index]
+            console.log(city)
+            let dom = document.getElementById(city);
+            let myChart = echarts.init(dom);
+            console.log(salary_dict[city]["data"]);
+            option["title"]["text"] = city + "薪资分布";
+            option["series"][0]["data"] = salary_dict[city];
+            console.log(option);
+            myChart.setOption(option);
+        }
+
+    </script>
+</body>
+</html>
