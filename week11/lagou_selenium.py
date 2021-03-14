@@ -12,7 +12,7 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-laogou_url = "https://lagou.com"
+lagou_url = "https://lagou.com"
 mysql_host = "my-host"
 mysql_port = 3306
 mysql_user = "test_user"
@@ -48,7 +48,7 @@ def lagou_spider(city, job_dict):
     web_browser = Chrome()
 
     job_set = set()
-    web_browser.get(laogou_url)
+    web_browser.get(lagou_url)
 
     # 进入拉钩城市站
     time.sleep(2)
