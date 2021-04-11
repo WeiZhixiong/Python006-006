@@ -9,17 +9,21 @@ class Comment(models.Model):
     body = models.TextField(verbose_name="评论内容", max_length=256, blank=False)
     create_time = models.DateTimeField(auto_now_add=True)
     update_time = models.DateTimeField(auto_now=True)
-    author_id = models.ForeignKey(
+    user = models.ForeignKey(
         'users.ForumUser',
-        verbose_name="评论者id",
-        related_name='comment_user',
+        verbose_name="评论者",
         on_delete=models.CASCADE,
     )
-    article_id = models.ForeignKey(
+    article = models.ForeignKey(
         "article.Article",
-        verbose_name="文章id",
-        related_name='article_comment',
+        verbose_name="文章",
         on_delete=models.CASCADE,
+    )
+    relay_comment = models.ForeignKey(
+        'self',
+        verbose_name="回复对象",
+        on_delete=models.CASCADE,
+        null=True
     )
 
     def __str__(self):

@@ -17,7 +17,7 @@ class ArticleViewSet(viewsets.ModelViewSet):
     search_fields = filterset_fields
 
     def perform_create(self, serializer):
-        serializer.save(author_id=self.request.user)
+        serializer.save(user=self.request.user)
 
     def retrieve(self, request, *args, **kwargs):
         article = self.get_object()

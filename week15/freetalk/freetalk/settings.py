@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'users',
     'article',
     'comment',
+    'active',
 ]
 
 MIDDLEWARE = [
@@ -81,9 +82,17 @@ WSGI_APPLICATION = 'freetalk.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
+    "default": {
+        "NAME": "freetalk",
+        "ENGINE": "django.db.backends.mysql",
+        "USER": "freetalk",
+        "PASSWORD": "*********",
+        "HOST": "192.168.136.128",
+        "PORT": 3306
     }
 }
 
@@ -139,3 +148,45 @@ REST_FRAMEWORK = {
 }
 
 AUTH_USER_MODEL = 'users.ForumUser'
+
+LOG_FILE = Path(BASE_DIR, 'logs/free_talk.log')
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "recommend": {
+            "format": "%(asctime)s | %(name)s | %(lineno)d | %(levelname)s | %(message)s"
+        }
+    },
+    "handlers": {
+        "console": {
+            "level": "INFO",
+            "class": "logging.StreamHandler",
+            "formatter": "recommend",
+        },
+        "file": {
+            'encoding': 'utf8',
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'maxBytes': 1024 * 1024 * 100,
+            'backupCount': 7,
+            'formatter': 'recommend',
+            'filename': LOG_FILE,
+        }
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console", "file"],
+            "propagate": False
+        },
+        "django.request": {
+            "handlers": ["console", "file"],
+            "propagate": False
+        },
+        "django.server": {
+            "handlers": ["console", "file"],
+            "propagate": False
+        }
+    }
+}

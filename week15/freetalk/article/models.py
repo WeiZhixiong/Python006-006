@@ -12,10 +12,9 @@ class Article(models.Model):
     create_time = models.DateTimeField(auto_now_add=True)
     update_time = models.DateTimeField(auto_now=True)
 
-    author_id = models.ForeignKey(
+    user = models.ForeignKey(
         'users.ForumUser',
-        verbose_name="用户id",
-        related_name='articles',
+        verbose_name="作者",
         on_delete=models.CASCADE,
     )
 

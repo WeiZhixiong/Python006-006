@@ -7,7 +7,8 @@ from rest_framework.documentation import include_docs_urls
 api_v1 = [
     path('users/', include('users.urls')),
     path('aritcle/', include('article.urls')),
-    path('comment/', include('comment.urls'))
+    path('comment/', include('comment.urls')),
+    path('active/', include('active.urls')),
 ]
 
 

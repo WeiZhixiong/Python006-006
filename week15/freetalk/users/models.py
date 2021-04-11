@@ -24,6 +24,10 @@ class ForumUser(AbstractUser):
     nickname = models.CharField(verbose_name="昵称", max_length=128, unique=True)
     brief = models.TextField(verbose_name="简介", blank=True, default='')
     create_time = models.DateTimeField(auto_now_add=True)
+    score = models.BigIntegerField(
+        verbose_name="积分",
+        default=0
+    )
 
     objects = ForumUserManager()
 

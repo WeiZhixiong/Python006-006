@@ -15,4 +15,4 @@ class CommentViewSet(viewsets.ModelViewSet):
     search_fields = ['body']
 
     def perform_create(self, serializer):
-        serializer.save(author_id=self.request.user)
+        serializer.save(user=self.request.user)

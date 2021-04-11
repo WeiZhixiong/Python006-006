@@ -6,10 +6,10 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ("id", "body", "author_id", "article_id", "create_time", "update_time")
-        read_only_fields = ["id", "author_id", "create_time", "update_time"]
+        fields = ("id", "body", "user", "article", "relay_comment", "create_time", "update_time")
+        read_only_fields = ["id", "user", "create_time", "update_time"]
         actions_readonly_fields = {
-            ('update', 'partial_update'): ('article_id',)
+            ('update', 'partial_update'): ('article', 'relay_comment')
         }
         
     def get_extra_kwargs(self):
